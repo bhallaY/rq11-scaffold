@@ -1,5 +1,5 @@
 import './style.css'
-
+import playIcon from './assets/play.svg'
 
 export function Timer() {
     return (
@@ -16,7 +16,7 @@ export function Timer() {
                 </li>
             </ul>
             <button title="Play" className="toggle">
-                <img src='./assets/play.svg' alt="Play" />
+                <img src={playIcon} alt="Play" />
             </button>
         </section>
     )
