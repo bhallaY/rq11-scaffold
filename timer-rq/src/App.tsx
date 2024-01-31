@@ -1,11 +1,14 @@
-import './App.css'
+import './style.css'
+import { TimerManager } from './TimerManager'
 
 function App() {
-
   return (
-    <>
-    <h1>Hell World</h1>
-    </>
+    (
+      <main className="wrapper">
+        <h1 className="title">Hell World</h1>
+        <TimerManager />
+      </main>
+    )
   )
 }
 
