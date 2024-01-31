@@ -5,7 +5,6 @@ function App() {
   return (
     (
       <main className="wrapper">
-        <h1 className="title">Hell World</h1>
         <TimerManager />
       </main>
     )
