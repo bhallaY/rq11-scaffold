@@ -2,7 +2,7 @@ import { useState } from "react";
 import { TimeButton } from "./TimeButton";
 import playIcon from "./assets/play.svg";
 
-export function TimerForm({ setStartTime, setTimer }) {
+export function TimerForm({ handleNewTimer }) {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
 
@@ -50,8 +50,7 @@ export function TimerForm({ setStartTime, setTimer }) {
         onClick={(evt) => {
           evt.preventDefault();
           const givenTimeAsSeconds = minutes * 60 + seconds;
-          setStartTime(givenTimeAsSeconds);
-          setTimer(true);
+          handleNewTimer(givenTimeAsSeconds);
         }}
       />
     </form>
