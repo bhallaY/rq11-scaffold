@@ -1,22 +1,24 @@
-import { useReducer } from "react";
+import { useReducer, useState } from "react";
 import { Timer } from "./Timer";
 import { TimerForm } from "./TimerForm";
 
-const initialTimer = {
-  timeInSeconds: 0,
-  isSet: false,
-};
+const initTimers = [];
 
-function timerReducer(timer, action) {
+function timerReducer(timers, action) {
   switch (action.type) {
     case "created": {
-      return {
-        isSet: true,
-        timeInSeconds: action.startTime,
-      };
+      action.incrementId();
+      return [
+        ...timers,
+        {
+          id: action.id,
+          isSet: true,
+          timeInSeconds: action.startTime,
+        },
+      ];
     }
     case "deleted": {
-      return { ...timer, isSet: false };
+      return timers.filter((timer) => timer.id !== action.id);
     }
     default: {
       throw Error("Unknown action: " + action.type);
@@ -25,29 +27,47 @@ function timerReducer(timer, action) {
 }
 
 export function TimerManager() {
-  const [timer, dispatch] = useReducer(timerReducer, initialTimer);
-  const handleTimerEnd = () => {
+  const [timers, dispatch] = useReducer(timerReducer, initTimers);
+  const [nextTimerId, setNextId] = useState(0);
+  const [isAdding, setAdding] = useState(false);
+
+  const handleTimerEnd = (id) => {
     dispatch({
       type: "deleted",
+      id: id,
     });
   };
+  const incrementId = () => setNextId(nextTimerId + 1);
+  const nid = nextTimerId;
 
   const handleTimerAdd = (startTime) => {
+    setAdding(false);
     dispatch({
       type: "created",
       startTime: startTime,
+      id: nid,
+      incrementId: incrementId,
     });
   };
 
   return (
     <div className="timers">
-      {timer.isSet ? (
-        <Timer
-          startTime={timer.timeInSeconds}
-          handleTimerEnd={handleTimerEnd}
-        />
-      ) : (
+      {timers.map((timer) => {
+        return (
+          <Timer
+            key={timer.id}
+            startTime={timer.timeInSeconds}
+            handleTimerEnd={handleTimerEnd}
+            id={timer.id}
+          />
+        );
+      })}
+      {isAdding ? (
         <TimerForm handleNewTimer={handleTimerAdd} />
+      ) : (
+        <button className="timer timer-add" onClick={() => setAdding(true)}>
+          +
+        </button>
       )}
     </div>
   );

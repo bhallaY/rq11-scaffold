@@ -7,18 +7,23 @@ import { useEffect, useState } from "react";
 import { TimeDisplay } from "./TimeDisplay";
 import { TimeButton } from "./TimeButton";
 
-export function Timer({ startTime, handleTimerEnd }) {
+export function Timer({ startTime, handleTimerEnd, id }) {
   const [secondsRemaining, setSecondsRemaining] = useState(startTime);
   const [isPlaying, setPlaying] = useState(false);
-  const play = () => setPlaying(true);
+  const [hasPlayed, setPlayed] = useState(false);
+  const play = () => {
+    setPlayed(true);
+    setPlaying(true);
+  };
   const pause = () => setPlaying(false);
   const label = isPlaying ? "Pause" : "Play";
   const icon = isPlaying ? pauseIcon : playIcon;
-  const hasEnded = secondsRemaining <= 0 && !isPlaying;
+  const hasEnded = hasPlayed && secondsRemaining <= 0 && !isPlaying;
   const onClick = isPlaying ? pause : play;
   const handleTimerReset = () => {
     setSecondsRemaining(startTime);
     setPlaying(false);
+    setPlayed(false);
   };
 
   useEffect(() => {
@@ -37,7 +42,7 @@ export function Timer({ startTime, handleTimerEnd }) {
     }
     const interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
-  }, [isPlaying, startTime]);
+  }, [isPlaying, startTime, hasPlayed]);
 
   return (
     <section
@@ -53,7 +58,11 @@ export function Timer({ startTime, handleTimerEnd }) {
         disabled={hasEnded}
       />
       <TimeButton icon={resetIcon} label="Reset" onClick={handleTimerReset} />
-      <TimeButton icon={trashIcon} label="Trash" onClick={handleTimerEnd} />
+      <TimeButton
+        icon={trashIcon}
+        label="Trash"
+        onClick={() => handleTimerEnd(id)}
+      />
     </section>
   );
 }
